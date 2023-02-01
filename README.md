@@ -1,20 +1,20 @@
 ## Getting Started
 This app is built using [Expo](https://docs.expo.dev/get-started/installation/), to enable it run on both IOS and Android devices
 
-First, Install all dependencies
+## First, Install all dependencies
 
 ```bash
 yarn install
 ```
 
-Second, Running the application:
+## Second, Running the application:
 
 ```bash
 To run the app, you have to install the Expo Go app on your iOS or 
 Android phone and connect to the same wireless network as your computer.
 ```
 
-Third, Use to command below to start the app
+## Third, Use to command below to start the app
 
 ```bash
 expo start
