@@ -5,7 +5,8 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    StyleSheet
+    StyleSheet,
+    ActivityIndicator
   } from "react-native";
   import React, { useEffect, useState } from "react";
   import { StatusBar } from "expo-status-bar";
@@ -23,14 +24,17 @@ import {
     const username = route?.params?.username;  
     const avatar = route?.params?.avatar;
     const [repository, setRepository] = useState<any[]>();
+    const [loading, setLoading] = useState<boolean>(false);
 
 
     useEffect(() => {
         const getRepository = async () => {
+            setLoading(true)
             try {
                 const repository = await axios.get(`https://api.github.com/users/${username}/repos`);
                 if (repository){
                     setRepository(repository.data)
+                    setLoading(false)
                 } 
             } catch (error) {
                 console.warn(error)
@@ -90,7 +94,6 @@ import {
                         {username}
                     </Text>
                 </View>
-            
                 <ProfileItems username={username} />
             </View>
           </View>
@@ -102,7 +105,6 @@ import {
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
             }}>
-
             <Text
                 style={{
                     fontSize: 20,
@@ -115,7 +117,9 @@ import {
             >
                 {`Repos:`}
             </Text>
-
+            {loading &&
+              <ActivityIndicator style={{ marginTop: "20%" }} size={50} />
+            }
             <ScrollView>
                 {repository && repository?.map((item, i) => (
                     <RepoList name={item?.name} link={item?.html_url} key={i} />

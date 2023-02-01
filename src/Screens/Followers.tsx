@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
+import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native'
 import { Entypo } from '@expo/vector-icons'; 
 import { NavType, RouteType } from "../navigation/types";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -14,14 +14,18 @@ function Followers() {
     const route = useRoute<RouteType>();
     const username = route?.params?.username;
     const [followers, setFollowers] = useState<any[]>();
+    const [loading, setLoading] = useState<boolean>(false);
+
 
 
   useEffect(() => {
     const getFollowers = async () => {
+        setLoading(true)
         try {
             const followers = await axios.get(`https://api.github.com/users/${username}/followers`);
             if (followers){
                 setFollowers(followers.data)
+                setLoading(false)
             } 
         } catch (error) {
             console.warn(error)
@@ -74,7 +78,9 @@ function Followers() {
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
             }}>
-
+  	        {loading &&
+              <ActivityIndicator style={{ marginTop: "20%" }} size={50} />
+            }
             <ScrollView>
                 {followers && followers?.map((item, i) => (
                     <Profile
@@ -84,7 +90,6 @@ function Followers() {
                     />
                 ))}
             </ScrollView>
-            
           </View>
     </SafeAreaView>
   )

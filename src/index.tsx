@@ -4,15 +4,16 @@ import {
     SafeAreaView,
     Image,
     TextInput,
-    StyleSheet
+    StyleSheet,
+    ActivityIndicator
   } from "react-native";
   import React, { useEffect, useState } from "react";
   import { StatusBar } from "expo-status-bar";
   import { FontAwesome } from "@expo/vector-icons";
   import Profile from "./components/Profile";
-  
+ 
   const Index = () => {
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
     const [username, setUsername] = useState<string>("");
     const [profile, setProfile] = useState<{
          username: string, 
@@ -28,22 +29,27 @@ import {
           if (!username) {
               return;
           }
-          const profile = await fetch(`https://api.github.com/users/${username}`);
-          const profileJson = await profile.json();
-      
-          if (profileJson){
-              setProfile({ 
-                  username: profileJson?.login, 
-                  name: profileJson?.name, 
-                  avatar: profileJson?.avatar_url, 
-                  followers: profileJson?.followers, 
-                  following: profileJson?.following,
-                  repos: profileJson?.public_repos
-              })
+          setLoading(true)
+          try {
+            const profile = await fetch(`https://api.github.com/users/${username}`);
+            const profileJson = await profile.json();
+        
+            if (profileJson){
+                setProfile({ 
+                    username: profileJson?.login, 
+                    name: profileJson?.name, 
+                    avatar: profileJson?.avatar_url, 
+                    followers: profileJson?.followers, 
+                    following: profileJson?.following,
+                    repos: profileJson?.public_repos
+                })
+                setLoading(false)
+            }
+          } catch (error) {
+            console.log(error)
           }
       };
       onSearch()
-
     }, [username])
  
 
@@ -96,6 +102,9 @@ import {
               borderTopRightRadius: 20,
             }}>
 
+            {loading &&
+              <ActivityIndicator style={{ marginTop: "20%" }} size={50} />
+            }
 
             {username && profile && (
               <Profile
